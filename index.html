@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>DSN Esports & Academic Club</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --green: #0b3d2e;
+      --green-soft: #dff5eb;
+      --yellow: #f4c542;
+      --white: #ffffff;
+      --text: #14352b;
+      --muted: #6f8179;
+      --glass: rgba(255, 255, 255, 0.72);
+      --glass-strong: rgba(255, 255, 255, 0.88);
+      --border: rgba(255, 255, 255, 0.78);
+      --shadow: rgba(22, 73, 54, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Noto Sans Thai', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(11, 61, 46, 0.16), transparent 30%),
+        radial-gradient(circle at top right, rgba(244, 197, 66, 0.20), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(81, 189, 138, 0.18), transparent 32%),
+        linear-gradient(135deg, #ffffff 0%, #f6fbf8 45%, #eef8f2 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .blob {
+      position: fixed;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      filter: blur(45px);
+      opacity: 0.28;
+      z-index: 0;
+      pointer-events: none;
+      animation: float 8s ease-in-out infinite alternate;
+    }
+
+    .blob.one {
+      background: #1da36a;
+      top: 10%;
+      left: -120px;
+    }
+
+    .blob.two {
+      background: #f4c542;
+      right: -130px;
+      bottom: 10%;
+      animation-delay: 1.5s;
+    }
+
+    @keyframes float {
+      from {
+        transform: translateY(-20px) scale(1);
+      }
+      to {
+        transform: translateY(25px) scale(1.08);
+      }
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      width: min(1120px, 92%);
+      margin: 0 auto;
+      padding: 34px 0 70px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 26px;
+    }
+
+    .club-logo {
+      width: min(230px, 58vw);
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 18px 30px rgba(0,0,0,0.12));
+    }
+
+    .page {
+      display: none;
+      animation: fadeUp 0.45s ease both;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.68);
+      border: 1px solid rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 12px 30px rgba(22, 73, 54, 0.10);
+      color: var(--green);
+      font-weight: 800;
+      font-size: 0.92rem;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 6vw, 4.6rem);
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: -1.4px;
+      color: var(--green);
+    }
+
+    .subtitle {
+      margin: 14px auto 0;
+      max-width: 720px;
+      color: var(--muted);
+      font-size: clamp(0.96rem, 2vw, 1.12rem);
+      line-height: 1.7;
+    }
+
+    .video-card {
+      width: min(860px, 100%);
+      margin: 26px auto 34px;
+      padding: 16px;
+      border-radius: 34px;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(26px);
+      -webkit-backdrop-filter: blur(26px);
+      box-shadow: 0 28px 70px var(--shadow);
+    }
+
+    .main-video {
+      width: 100%;
+      display: block;
+      border-radius: 24px;
+      pointer-events: none;
+      user-select: none;
+      background: #eaf5ee;
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .game-card {
+      position: relative;
+      min-height: 210px;
+      padding: 24px 18px;
+      border-radius: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      background:
+        linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.54));
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 22px 54px rgba(22, 73, 54, 0.13);
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .game-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top right, rgba(244,197,66,0.22), transparent 38%),
+        radial-gradient(circle at bottom left, rgba(11,61,46,0.12), transparent 42%);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .game-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(11, 61, 46, 0.18);
+      box-shadow: 0 28px 68px rgba(22, 73, 54, 0.20);
+    }
+
+    .game-card:hover::before {
+      opacity: 1;
+    }
+
+    .game-content {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .game-logo {
+      width: 108px;
+      height: 108px;
+      object-fit: contain;
+      margin-bottom: 18px;
+      filter: drop-shadow(0 16px 24px rgba(0,0,0,0.10));
+    }
+
+    .game-card h2 {
+      margin: 0;
+      font-size: 1.22rem;
+      font-weight: 900;
+      color: var(--green);
+    }
+
+    .game-card p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      padding: 11px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.72);
+      color: var(--green);
+      font-family: inherit;
+      font-weight: 900;
+      cursor: pointer;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 14px 34px rgba(22, 73, 54, 0.12);
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .back-btn:hover {
+      transform: translateX(-4px);
+      background: rgba(255,255,255,0.92);
+    }
+
+    .detail-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .detail-logo-wrap {
+      width: min(500px, 100%);
+      margin: 0 auto 18px;
+      padding: 18px;
+      border-radius: 34px;
+      background: rgba(255,255,255,0.76);
+      border: 1px solid rgba(255,255,255,0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 24px 60px rgba(22, 73, 54, 0.14);
+    }
+
+    .detail-logo {
+      width: 100%;
+      display: block;
+      border-radius: 24px;
+      object-fit: contain;
+    }
+
+    .detail-title {
+      margin: 0;
+      font-size: clamp(1.8rem, 5vw, 3.8rem);
+      font-weight: 900;
+      color: var(--green);
+      letter-spacing: -0.8px;
+    }
+
+    .detail-subtitle {
+      margin: 8px auto 0;
+      max-width: 700px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .content-stack {
+      width: min(900px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 24px;
+    }
+
+    .glass-section {
+      padding: 18px;
+      border-radius: 34px;
+      background: rgba(255,255,255,0.74);
+      border: 1px solid rgba(255,255,255,0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 24px 64px rgba(22, 73, 54, 0.13);
+    }
+
+    .glass-section h3 {
+      margin: 0 0 14px;
+      text-align: center;
+      color: var(--green);
+      font-size: 1.24rem;
+      font-weight: 900;
+    }
+
+    .setting-img {
+      width: 100%;
+      display: block;
+      border-radius: 24px;
+      background: #f3faf6;
+      border: 1px solid rgba(11, 61, 46, 0.08);
+    }
+
+    .skin-box {
+      padding: 26px;
+    }
+
+    .skin-box h3 {
+      margin-bottom: 8px;
+    }
+
+    .skin-intro {
+      margin: 0 auto 18px;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.7;
+      font-weight: 600;
+    }
+
+    .skin-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .skin-item {
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.76);
+      border: 1px solid rgba(11, 61, 46, 0.08);
+      color: #24483d;
+      font-size: 0.94rem;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .empty-note {
+      padding: 26px;
+      text-align: center;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.72);
+      border: 1px dashed rgba(11, 61, 46, 0.22);
+      color: var(--muted);
+      line-height: 1.7;
+      font-weight: 700;
+    }
+
+.schedule-announcement {
+  width: min(960px, 100%);
+  margin: 0 auto 34px;
+  padding: 26px;
+  border-radius: 32px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.92),
+      rgba(255, 255, 255, 0.60)
+    );
+  border: 1px solid rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(26px);
+  -webkit-backdrop-filter: blur(26px);
+  box-shadow: 0 24px 60px rgba(22, 73, 54, 0.13);
+}
+
+.schedule-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: left;
+  margin-bottom: 22px;
+}
+
+.schedule-icon {
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  background: var(--green-soft);
+  font-size: 1.45rem;
+}
+
+.schedule-heading h2 {
+  margin: 0;
+  color: var(--green);
+  font-size: clamp(1.25rem, 3vw, 1.8rem);
+  font-weight: 900;
+}
+
+.schedule-heading p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+  font-weight: 600;
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.schedule-item {
+  min-height: 104px;
+  padding: 17px 14px;
+  border-radius: 21px;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(11, 61, 46, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.schedule-item strong {
+  color: var(--green);
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.schedule-item span {
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.game-date {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 13px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: var(--green-soft);
+  color: var(--green);
+  font-size: 0.79rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+    footer {
+      margin-top: 46px;
+      text-align: center;
+      color: rgba(20, 53, 43, 0.58);
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    @media (max-width: 940px) 
+    .schedule-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+    {
+      .game-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 560px) 
+    .schedule-announcement {
+  padding: 18px;
+  border-radius: 26px;
+}
+
+.schedule-heading {
+  align-items: flex-start;
+}
+
+.schedule-grid {
+  grid-template-columns: 1fr;
+}
+
+.schedule-item {
+  min-height: 84px;
+}
+    {
+      .app {
+        width: min(94%, 1120px);
+        padding-top: 24px;
+      }
+
+      .game-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .video-card,
+      .detail-logo-wrap,
+      .glass-section {
+        border-radius: 26px;
+        padding: 12px;
+      }
+
+      .main-video,
+      .detail-logo,
+      .setting-img {
+        border-radius: 18px;
+      }
+
+      .skin-box {
+        padding: 18px;
+      }
+
+      .skin-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .game-card {
+        min-height: 190px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="blob one"></div>
+  <div class="blob two"></div>
+
+  <main class="app">
+    <div class="topbar">
+      <img
+        class="club-logo"
+        src="https://raw.githubusercontent.com/patcharaphongdsn/sp-web-assets/refs/heads/main/DSN%20ESPORTS%20%26%20ACEDEMIC%20CLUB%20Logo.png"
+        alt="DSN Esports & Academic Club Logo"
+      >
+    </div>
+
+    <!-- HOME PAGE -->
+    <section id="homePage" class="page active">
+      <div class="hero">
+        <div class="eyebrow">DSN Esports & Academic Club</div>
+        <h1>การแข่งขัน DSN ESPORTS 2026</h1>
+        <p class="subtitle">
+          เลือกเกมการแข่งขันด้านล่างเพื่อดูรายละเอียด กติกา และการตั้งค่าการแข่งขัน
+        </p>
+      </div>
+
+<div class="video-card">
+  <video
+    class="main-video"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="auto"
+  >
+    <source src="https://raw.githubusercontent.com/patcharaphongdsn/sp-web-assets/main/DSN%20Esports%202026.mp4" type="video/mp4">
+  </video>
+</div>
+
+<div class="schedule-announcement">
+  <div class="schedule-heading">
+    <span class="schedule-icon">📅</span>
+    <div>
+      <h2>กำหนดการแข่งขัน DSN ESPORTS 2026</h2>
+      <p>โปรดตรวจสอบวันและเวลาการแข่งขันของแต่ละประเภท</p>
+    </div>
+  </div>
+
+  <div class="schedule-grid">
+    <div class="schedule-item">
+      <strong>Free Fire</strong>
+      <span>20–22 กรกฎาคม 2569</span>
+    </div>
+
+    <div class="schedule-item">
+      <strong>RoV</strong>
+      <span>3–5 สิงหาคม 2569</span>
+    </div>
+
+    <div class="schedule-item">
+      <strong>Valorant</strong>
+      <span>8–9 สิงหาคม 2569</span>
+    </div>
+
+    <div class="schedule-item">
+      <strong>E Football</strong>
+      <span>10–11 สิงหาคม 2569</span>
+    </div>
+  </div>
+</div>
+
+<div class="game-grid" id="gameGrid"></div>
+    </section>
+
+    <!-- DETAIL PAGE -->
+    <section id="detailPage" class="page">
+      <button class="back-btn" onclick="goHome()">← กลับหน้าแรก</button>
+
+      <div class="detail-header">
+        <div class="detail-logo-wrap">
+          <img id="detailLogo" class="detail-logo" src="" alt="">
+        </div>
+
+        <h2 id="detailTitle" class="detail-title"></h2>
+        <p id="detailSubtitle" class="detail-subtitle"></p>
+      </div>
+
+      <div class="content-stack" id="detailContent"></div>
+    </section>
+
+    <footer>
+      DSN Esports & Academic Club | Debsirin Nonthaburi School
+    </footer>
+  </main>
+
+  <script>
+const games = [
+  {
+    id: "rov",
+    name: "RoV",
+    date: "3–5 สิงหาคม 2569",
+    logo: "https://raw.githubusercontent.com/patcharaphongdsn/sp-web-assets/refs/heads/main/RoV.png",
+    subtitle: "รายละเอียดการแข่งขัน RoV | แข่งขันวันที่ 3–5 สิงหาคม 2569",
+    settings: [
+      "https://raw.githubusercontent.com/patcharaphongdsn/sp-web-assets/refs/heads/main/SRoV.png"
+    ],
+    bannedSkins: [
+      "Airi — Heavenly Striker",
+      "Alice — Eternal Sailor Chibi Moon",
+      "Arduin — Cyclone",
+      "Aya — Cinnamoroll’s Dream",
+      "Diao Chan — Eternal Sailor Moon",
+      "Eland’orr — Tuxedo Mask",
+      "Elsu — Cloud Piercer",
+      "Florentino — Age of Amber",
+      "Krizzix — Minstrel",
+      "Natalya — Kuromi’s Heart",
+      "Nakroth — Stellar Troupe",
+      "Mortos — Pompompurin’s Oath",
+      "Rouie — Nether Steward",
+      "Teeri — Prestigious Magician",
+      "Tulen — Cosmos: Solar Flare",
+      "Tulen — Celestial Paladin",
+      "Sinestrea — Demonic Armor",
+      "Yena — Seraphic Virgo",
+      "Veera — My Melody’s Love",
+      "Xeniel — Demonic Creation"
+    ]
+  },
+  {
+    id: "freefire",
+    name: "Free Fire",
+    date: "20–22 กรกฎาคม 2569",
+    logo: "https://raw.githubusercontent.com/patcharaphongdsn/sp-web-assets/refs/heads/main/Free%20Fire.png",
+    subtitle: "รายละเอียดการแข่งขัน Free Fire | แข่งขันวันที่ 20–22 กรกฎาคม 2569",
+    settings: [
+      "https://raw.githubusercontent.com/patcharaphongdsn/sp-web-assets/refs/heads/main/SFF.png"
+    ],
+    bannedSkins: []
+  },
+  {
+    id: "valorant",
+    name: "Valorant",
+    date: "8–9 สิงหาคม 2569",
+    logo: "https://raw.githubusercontent.com/patcharaphongdsn/sp-web-assets/refs/heads/main/Valorant.png",
+    subtitle: "รายละเอียดการแข่งขัน Valorant | แข่งขันวันที่ 8–9 สิงหาคม 2569",
+    settings: [],
+    bannedSkins: []
+  },
+  {
+    id: "efootball",
+    name: "E Football",
+    date: "10–11 สิงหาคม 2569",
+    logo: "https://raw.githubusercontent.com/patcharaphongdsn/sp-web-assets/refs/heads/main/E%20Football.png",
+    subtitle: "รายละเอียดการแข่งขัน E Football | แข่งขันวันที่ 10–11 สิงหาคม 2569",
+    settings: [
+      "https://raw.githubusercontent.com/patcharaphongdsn/sp-web-assets/refs/heads/main/SEFB.png",
+      "https://raw.githubusercontent.com/patcharaphongdsn/sp-web-assets/refs/heads/main/SEFB2.png"
+    ],
+    bannedSkins: []
+  }
+];
+
+    function renderGameCards() {
+      const grid = document.getElementById("gameGrid");
+      grid.innerHTML = "";
+
+      games.forEach(game => {
+        const card = document.createElement("div");
+        card.className = "game-card";
+        card.onclick = () => openGame(game.id);
+
+card.innerHTML = `
+  <div class="game-content">
+    <img class="game-logo" src="${game.logo}" alt="${game.name}">
+    <h2>${game.name}</h2>
+    <div class="game-date">📅 ${game.date}</div>
+    <p>คลิกเพื่อดูรายละเอียดการแข่งขัน</p>
+  </div>
+`;
+
+        grid.appendChild(card);
+      });
+    }
+
+    function openGame(gameId) {
+      const game = games.find(item => item.id === gameId);
+      if (!game) return;
+
+      document.getElementById("detailLogo").src = game.logo;
+      document.getElementById("detailLogo").alt = game.name;
+      document.getElementById("detailTitle").textContent = game.name;
+      document.getElementById("detailSubtitle").textContent = game.subtitle;
+
+      const content = document.getElementById("detailContent");
+      content.innerHTML = "";
+
+      if (game.settings.length > 0) {
+        game.settings.forEach((settingUrl, index) => {
+          const section = document.createElement("div");
+          section.className = "glass-section";
+
+          const title = game.settings.length > 1
+            ? `Setting การแข่งขัน ${index + 1}`
+            : "Setting การแข่งขัน";
+
+          section.innerHTML = `
+            <h3>${title}</h3>
+            <img class="setting-img" src="${settingUrl}" alt="${game.name} setting ${index + 1}">
+          `;
+
+          content.appendChild(section);
+        });
+      } else {
+        const empty = document.createElement("div");
+        empty.className = "glass-section";
+        empty.innerHTML = `
+          <div class="empty-note">
+            ยังไม่มีไฟล์ Setting สำหรับเกมนี้<br>
+            สามารถเพิ่มลิงก์รูป Setting ในตัวแปร settings ได้ภายหลัง
+          </div>
+        `;
+        content.appendChild(empty);
+      }
+
+      if (game.bannedSkins.length > 0) {
+        const skinSection = document.createElement("div");
+        skinSection.className = "glass-section skin-box";
+
+        skinSection.innerHTML = `
+          <h3>รายชื่อสกินที่ไม่อนุญาตให้ใช้ในการแข่งขัน</h3>
+          <p class="skin-intro">
+            ผู้เข้าแข่งขันห้ามเลือกใช้สกินดังต่อไปนี้ตลอดระยะเวลาการแข่งขัน
+          </p>
+          <div class="skin-grid">
+            ${game.bannedSkins.map(skin => `<div class="skin-item">${skin}</div>`).join("")}
+          </div>
+        `;
+
+        content.appendChild(skinSection);
+      }
+
+      showPage("detailPage");
+    }
+
+    function showPage(pageId) {
+      document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+      });
+
+      document.getElementById(pageId).classList.add("active");
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+    function goHome() {
+      showPage("homePage");
+    }
+
+    renderGameCards();
+  </script>
+</body>
+</html>
